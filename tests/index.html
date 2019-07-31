@@ -15,7 +15,7 @@
           "http://localhost:8080/resources/oauthcallback.html"
         );
         oauth.login().then(function(oauthResult) {
-          force.DataService.createInstance(oauthResult, {useProxy: false});
+          force.DataService.createInstance(oauthResult, { useProxy: false });
           var service = force.DataService.getInstance();
           service
             .query("select id, Name from contact LIMIT 50")

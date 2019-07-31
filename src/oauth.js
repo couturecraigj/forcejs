@@ -104,11 +104,18 @@ class OAuthWeb extends OAuth {
       console.log("loginURL: " + this.loginURL);
       console.log("oauthCallbackURL: " + this.oauthCallbackURL);
       function windowListener(event) {
-        if (typeof event.data !== 'object' || event.data.type !== 'oauthCallback') return;
+        console.log(event);
+        if (
+          typeof event.data !== "object" ||
+          event.data.type !== "oauthCallback"
+        )
+          return;
+        
         let url = event.data.url,
           oauthResult = getQueryStringAsObject(url);
-
+          console.log(oauthResult, this.instanceId);
         if (oauthResult.state == this.instanceId) {
+          
           if (oauthResult.access_token) {
             resolve({
               appId: this.appId,
@@ -123,7 +130,7 @@ class OAuthWeb extends OAuth {
           window.removeEventListener("message", windowListener);
         }
       }
-      window.addEventListener("message", windowListener);
+      window.addEventListener("message", windowListener.bind(this));
       document.addEventListener("oauthCallback", event => {
         let url = event.detail,
           oauthResult = getQueryStringAsObject(url);

@@ -196,11 +196,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        console.log("loginURL: " + _this3.loginURL);
 	        console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
 	        function windowListener(event) {
-	          if (_typeof(event.data) !== 'object' || event.data.type !== 'oauthCallback') return;
+	          console.log(event);
+	          if (_typeof(event.data) !== "object" || event.data.type !== "oauthCallback") return;
+
 	          var url = event.data.url,
 	              oauthResult = getQueryStringAsObject(url);
-
+	          console.log(oauthResult, this.instanceId);
 	          if (oauthResult.state == this.instanceId) {
+
 	            if (oauthResult.access_token) {
 	              resolve({
 	                appId: this.appId,
@@ -215,7 +218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            window.removeEventListener("message", windowListener);
 	          }
 	        }
-	        window.addEventListener("message", windowListener);
+	        window.addEventListener("message", windowListener.bind(_this3));
 	        document.addEventListener("oauthCallback", function (event) {
 	          var url = event.detail,
 	              oauthResult = getQueryStringAsObject(url);
