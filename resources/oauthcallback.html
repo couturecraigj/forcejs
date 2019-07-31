@@ -1,9 +1,33 @@
+<!DOCTYPE html>
 <html>
-<body>
-<script>
-    var event = new CustomEvent("oauthCallback", {"detail": window.location.href});
-    window.opener.document.dispatchEvent(event);
-    window.close();
-</script>
-</body>
+  <head>
+    <!-- <script src="https://polyfill.io/v3/polyfill.js"></script> -->
+  </head>
+  <body>
+    <script>
+      var event;
+      if (typeof CustomEvent === "function") {
+        event = new CustomEvent("oauthCallback", {
+          detail: window.location.href
+        });
+        
+      } else {
+        try {
+          console.log('No CustomEvent')
+          event = document.createEvent("Event");
+          event.initEvent(
+            "change",
+            true,
+            true,
+            window.location.href
+          );
+        
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      window.opener.postMessage(window.location.href, '*');
+      window.close();
+    </script>
+  </body>
 </html>

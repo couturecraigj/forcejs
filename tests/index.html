@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://polyfill.io/v3/polyfill.js"></script>
+    <script src="../dist/force.all.js"></script>
+    <script>
+      function loadContacts() {
+        var oauth = force.OAuth.createInstance(
+          "3MVG9qbIpUScOGtZZJa_viApygZMsJHnLedig6kljtEXGtatnOhKukBotOnAAtMR1M_7rj455yzNbQrhFKpnN",
+          "https://txtav--qa.lightning.force.com/",
+          "http://localhost:8080/resources/oauthcallback.html"
+        );
+        oauth.login().then(function(oauthResult) {
+          force.DataService.createInstance(oauthResult, {useProxy: false});
+          var service = force.DataService.getInstance();
+          service
+            .query("select id, Name from contact LIMIT 50")
+            .then(function(response) {
+              var contacts = response.records;
+              console.log(contacts);
+            });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <button id="button">Click Me</button>
+    <script>
+      document.querySelector("#button").addEventListener("click", function(ev) {
+        ev.preventDefault();
+        loadContacts();
+      });
+    </script>
+  </body>
+</html>

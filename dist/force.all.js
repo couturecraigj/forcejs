@@ -69,7 +69,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * forcejs - REST toolkit for Salesforce.com
 	 * forcejs/oauth - OAuth User Agent Workflow module
 	 * Author: Christophe Coenraets @ccoenraets
-	 * Version: 2.0.1
+	 * Version: 2.2.1
 	 */
 	"use strict";
 
@@ -194,7 +194,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                console.log("loginURL: " + _this3.loginURL);
 	                console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
+	                window.addEventListener('message', function (event) {
+	                    var url = event.data,
+	                        oauthResult = getQueryStringAsObject(url);
 
+	                    if (oauthResult.state == _this3.instanceId) {
+
+	                        if (oauthResult.access_token) {
+	                            resolve({
+	                                appId: _this3.appId,
+	                                accessToken: oauthResult.access_token,
+	                                instanceURL: oauthResult.instance_url,
+	                                refreshToken: oauthResult.refresh_token,
+	                                userId: oauthResult.id.split("/").pop()
+	                            });
+	                        } else {
+	                            reject(oauthResult);
+	                        }
+	                    }
+	                });
 	                document.addEventListener("oauthCallback", function (event) {
 
 	                    var url = event.detail,
@@ -233,8 +251,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * forcejs - REST toolkit for Salesforce.com
 	 * forcejs/data-service - Salesforce APIs data service module
 	 * Author: Christophe Coenraets @ccoenraets
-	 * Fork: David Hohl <david.hohl@capgemini.com>
-	 * Version: 2.1.0
+	 * Version: 2.2.1
 	 */
 	"use strict";
 
@@ -360,7 +377,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else {
 	            this.useProxy = options.useProxy;
 	        }
-	        console.log('useProxy: ' + options.useProxy + ' ' + this.useProxy);
 
 	        // Only required when using REST APIs in an app hosted on your own server to avoid cross domain policy issues
 	        // To override default, pass proxyURL in init(props)
@@ -390,8 +406,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (url.slice(-1) === "/") {
 	                url = url.slice(0, -1);
 	            }
-
-	            console.log('useProxy:' + this.useProxy + ' instanceURL: ' + this.instanceURL + 'requestBaseURL: ' + url);
 	            return url;
 	        }
 	    }, {

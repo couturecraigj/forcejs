@@ -97,7 +97,25 @@ class OAuthWeb extends OAuth {
 
             console.log("loginURL: " + this.loginURL);
             console.log("oauthCallbackURL: " + this.oauthCallbackURL);
+            window.addEventListener('message', (event) => {
+                let url = event.data,
+                    oauthResult = getQueryStringAsObject(url);
 
+                if (oauthResult.state == this.instanceId) {
+
+                    if (oauthResult.access_token) {
+                        resolve({
+                            appId: this.appId,
+                            accessToken: oauthResult.access_token,
+                            instanceURL: oauthResult.instance_url,
+                            refreshToken: oauthResult.refresh_token,
+                            userId: oauthResult.id.split("/").pop()
+                        });
+                    } else {
+                        reject(oauthResult);
+                    }
+                }
+            })
             document.addEventListener("oauthCallback", (event) => {
 
                 let url = event.detail,
