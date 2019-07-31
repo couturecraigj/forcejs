@@ -73,6 +73,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -96,151 +98,150 @@ return /******/ (function(modules) { // webpackBootstrap
 	var oauthPlugin = void 0;
 
 	var getQueryStringAsObject = function getQueryStringAsObject(url) {
-	    var obj = {};
-	    var index = url.indexOf("#");
-	    if (index > -1) {
-	        var queryString = decodeURIComponent(url.substr(index + 1));
-	        var params = queryString.split("&");
-	        params.forEach(function (param) {
-	            var splitter = param.split("=");
-	            obj[splitter[0]] = splitter[1];
-	        });
-	    }
-	    return obj;
+	  var obj = {};
+	  var index = url.indexOf("#");
+	  if (index > -1) {
+	    var queryString = decodeURIComponent(url.substr(index + 1));
+	    var params = queryString.split("&");
+	    params.forEach(function (param) {
+	      var splitter = param.split("=");
+	      obj[splitter[0]] = splitter[1];
+	    });
+	  }
+	  return obj;
 	};
 
 	module.exports = {
-	    createInstance: function createInstance(appId, loginURL, oauthCallbackURL) {
-	        return window.cordova ? new OAuthCordova(appId, loginURL, oauthCallbackURL) : new OAuthWeb(appId, loginURL, oauthCallbackURL);
-	    }
+	  createInstance: function createInstance(appId, loginURL, oauthCallbackURL) {
+	    return window.cordova ? new OAuthCordova(appId, loginURL, oauthCallbackURL) : new OAuthWeb(appId, loginURL, oauthCallbackURL);
+	  }
 	};
 
 	var OAuth = function () {
-	    function OAuth(appId, loginURL, oauthCallbackURL) {
-	        _classCallCheck(this, OAuth);
+	  function OAuth(appId, loginURL, oauthCallbackURL) {
+	    _classCallCheck(this, OAuth);
 
-	        instanceCounter = instanceCounter + 1;
-	        this.instanceId = instanceCounter;
-	        this.appId = appId || "3MVG9fMtCkV6eLheIEZplMqWfnGlf3Y.BcWdOf1qytXo9zxgbsrUbS.ExHTgUPJeb3jZeT8NYhc.hMyznKU92";
-	        this.loginURL = loginURL || "https://login.salesforce.com";
-	        this.oauthCallbackURL = oauthCallbackURL || baseURL + "/oauthcallback.html";
-	    }
+	    instanceCounter = instanceCounter + 1;
+	    this.instanceId = instanceCounter;
+	    this.appId = appId || "3MVG9fMtCkV6eLheIEZplMqWfnGlf3Y.BcWdOf1qytXo9zxgbsrUbS.ExHTgUPJeb3jZeT8NYhc.hMyznKU92";
+	    this.loginURL = loginURL || "https://login.salesforce.com";
+	    this.oauthCallbackURL = oauthCallbackURL || baseURL + "/oauthcallback.html";
+	  }
 
-	    _createClass(OAuth, [{
-	        key: "login",
-	        value: function login() {}
-	    }, {
-	        key: "loginGuest",
-	        value: function loginGuest() {}
-	    }]);
+	  _createClass(OAuth, [{
+	    key: "login",
+	    value: function login() {}
+	  }, {
+	    key: "loginGuest",
+	    value: function loginGuest() {}
+	  }]);
 
-	    return OAuth;
+	  return OAuth;
 	}();
 
 	var OAuthCordova = function (_OAuth) {
-	    _inherits(OAuthCordova, _OAuth);
+	  _inherits(OAuthCordova, _OAuth);
 
-	    function OAuthCordova() {
-	        _classCallCheck(this, OAuthCordova);
+	  function OAuthCordova() {
+	    _classCallCheck(this, OAuthCordova);
 
-	        return _possibleConstructorReturn(this, (OAuthCordova.__proto__ || Object.getPrototypeOf(OAuthCordova)).apply(this, arguments));
-	    }
+	    return _possibleConstructorReturn(this, (OAuthCordova.__proto__ || Object.getPrototypeOf(OAuthCordova)).apply(this, arguments));
+	  }
 
-	    _createClass(OAuthCordova, [{
-	        key: "login",
-	        value: function login() {
-	            return new Promise(function (resolve, reject) {
-	                document.addEventListener("deviceready", function () {
-	                    oauthPlugin = cordova.require("com.salesforce.plugin.oauth");
-	                    if (!oauthPlugin) {
-	                        console.error("Salesforce Mobile SDK OAuth plugin not available");
-	                        reject("Salesforce Mobile SDK OAuth plugin not available");
-	                        return;
-	                    }
-	                    oauthPlugin.getAuthCredentials(function (creds) {
-	                        resolve({
-	                            accessToken: creds.accessToken,
-	                            instanceURL: creds.instanceUrl,
-	                            refreshToken: creds.refreshToken,
-	                            userId: creds.userId
-	                        });
-	                    }, function (error) {
-	                        console.log(error);
-	                        reject(error);
-	                    });
-	                }, false);
+	  _createClass(OAuthCordova, [{
+	    key: "login",
+	    value: function login() {
+	      return new Promise(function (resolve, reject) {
+	        document.addEventListener("deviceready", function () {
+	          oauthPlugin = cordova.require("com.salesforce.plugin.oauth");
+	          if (!oauthPlugin) {
+	            console.error("Salesforce Mobile SDK OAuth plugin not available");
+	            reject("Salesforce Mobile SDK OAuth plugin not available");
+	            return;
+	          }
+	          oauthPlugin.getAuthCredentials(function (creds) {
+	            resolve({
+	              accessToken: creds.accessToken,
+	              instanceURL: creds.instanceUrl,
+	              refreshToken: creds.refreshToken,
+	              userId: creds.userId
 	            });
-	        }
-	    }]);
+	          }, function (error) {
+	            console.log(error);
+	            reject(error);
+	          });
+	        }, false);
+	      });
+	    }
+	  }]);
 
-	    return OAuthCordova;
+	  return OAuthCordova;
 	}(OAuth);
 
 	var OAuthWeb = function (_OAuth2) {
-	    _inherits(OAuthWeb, _OAuth2);
+	  _inherits(OAuthWeb, _OAuth2);
 
-	    function OAuthWeb() {
-	        _classCallCheck(this, OAuthWeb);
+	  function OAuthWeb() {
+	    _classCallCheck(this, OAuthWeb);
 
-	        return _possibleConstructorReturn(this, (OAuthWeb.__proto__ || Object.getPrototypeOf(OAuthWeb)).apply(this, arguments));
-	    }
+	    return _possibleConstructorReturn(this, (OAuthWeb.__proto__ || Object.getPrototypeOf(OAuthWeb)).apply(this, arguments));
+	  }
 
-	    _createClass(OAuthWeb, [{
-	        key: "login",
-	        value: function login() {
-	            var _this3 = this;
+	  _createClass(OAuthWeb, [{
+	    key: "login",
+	    value: function login() {
+	      var _this3 = this;
 
-	            return new Promise(function (resolve, reject) {
+	      return new Promise(function (resolve, reject) {
+	        console.log("loginURL: " + _this3.loginURL);
+	        console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
+	        function windowListener(event) {
+	          if (_typeof(event.data) !== 'object' || event.data.type !== 'oauthCallback') return;
+	          var url = event.data.url,
+	              oauthResult = getQueryStringAsObject(url);
 
-	                console.log("loginURL: " + _this3.loginURL);
-	                console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
-	                window.addEventListener('message', function (event) {
-	                    var url = event.data,
-	                        oauthResult = getQueryStringAsObject(url);
-
-	                    if (oauthResult.state == _this3.instanceId) {
-
-	                        if (oauthResult.access_token) {
-	                            resolve({
-	                                appId: _this3.appId,
-	                                accessToken: oauthResult.access_token,
-	                                instanceURL: oauthResult.instance_url,
-	                                refreshToken: oauthResult.refresh_token,
-	                                userId: oauthResult.id.split("/").pop()
-	                            });
-	                        } else {
-	                            reject(oauthResult);
-	                        }
-	                    }
-	                });
-	                document.addEventListener("oauthCallback", function (event) {
-
-	                    var url = event.detail,
-	                        oauthResult = getQueryStringAsObject(url);
-
-	                    if (oauthResult.state == _this3.instanceId) {
-
-	                        if (oauthResult.access_token) {
-	                            resolve({
-	                                appId: _this3.appId,
-	                                accessToken: oauthResult.access_token,
-	                                instanceURL: oauthResult.instance_url,
-	                                refreshToken: oauthResult.refresh_token,
-	                                userId: oauthResult.id.split("/").pop()
-	                            });
-	                        } else {
-	                            reject(oauthResult);
-	                        }
-	                    }
-	                });
-
-	                var loginWindowURL = _this3.loginURL + ("/services/oauth2/authorize?client_id=" + _this3.appId + "&redirect_uri=" + _this3.oauthCallbackURL + "&response_type=token&state=" + _this3.instanceId);
-	                window.open(loginWindowURL, "_blank", "location=no");
-	            });
+	          if (oauthResult.state == this.instanceId) {
+	            if (oauthResult.access_token) {
+	              resolve({
+	                appId: this.appId,
+	                accessToken: oauthResult.access_token,
+	                instanceURL: oauthResult.instance_url,
+	                refreshToken: oauthResult.refresh_token,
+	                userId: oauthResult.id.split("/").pop()
+	              });
+	            } else {
+	              reject(oauthResult);
+	            }
+	            window.removeEventListener("message", windowListener);
+	          }
 	        }
-	    }]);
+	        window.addEventListener("message", windowListener);
+	        document.addEventListener("oauthCallback", function (event) {
+	          var url = event.detail,
+	              oauthResult = getQueryStringAsObject(url);
 
-	    return OAuthWeb;
+	          if (oauthResult.state == _this3.instanceId) {
+	            if (oauthResult.access_token) {
+	              resolve({
+	                appId: _this3.appId,
+	                accessToken: oauthResult.access_token,
+	                instanceURL: oauthResult.instance_url,
+	                refreshToken: oauthResult.refresh_token,
+	                userId: oauthResult.id.split("/").pop()
+	              });
+	            } else {
+	              reject(oauthResult);
+	            }
+	          }
+	        });
+
+	        var loginWindowURL = _this3.loginURL + ("/services/oauth2/authorize?client_id=" + _this3.appId + "&redirect_uri=" + _this3.oauthCallbackURL + "&response_type=token&state=" + _this3.instanceId);
+	        window.open(loginWindowURL, "_blank", "location=no");
+	      });
+	    }
+	  }]);
+
+	  return OAuthWeb;
 	}(OAuth);
 
 /***/ },
