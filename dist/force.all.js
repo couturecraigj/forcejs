@@ -196,7 +196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        console.log("loginURL: " + _this3.loginURL);
 	        console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
 	        var getOAuthData = function getOAuthData(url) {
-	          oauthResult = getQueryStringAsObject(url);
+	          var oauthResult = getQueryStringAsObject(url);
 	          console.log(oauthResult, _this3.instanceId);
 	          if (oauthResult.state == _this3.instanceId) {
 	            if (oauthResult.access_token) {
@@ -214,17 +214,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        };
 	        var windowListener = function windowListener(event) {
-	          console.log(event);
 	          if (_typeof(event.data) !== "object" || event.data.type !== "oauthCallback") return;
 
-	          var url = event.data.url;
-	          getOAuthData(url);
+	          getOAuthData(event.data.url);
 	        };
 
 	        var storageListener = function storageListener(event) {
 	          if (event.key !== "oauthCallback") return;
 	          var url = event.url.replace(/#.*/, "");
-	          if (event.url !== _this3.oauthCallbackURL) return;
+	          if (url !== _this3.oauthCallbackURL) return;
 	          getOAuthData(url);
 	        };
 
