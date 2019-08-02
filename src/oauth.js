@@ -135,8 +135,8 @@ class OAuthWeb extends OAuth {
 
       const storageListener = event => {
         if (event.key !== "oauthCallback") return;
-        if (event.url !== this.oauthCallbackURL) return;
         const url = event.url.replace(/#.*/, "");
+        if (url !== this.oauthCallbackURL) return;
         getOAuthData(url);
       };
 
@@ -150,6 +150,7 @@ class OAuthWeb extends OAuth {
       const teardown = () => {
         window.removeEventListener("message", windowListener);
         window.removeEventListener("storage", storageListener);
+        localStorage.removeItem("oauthCallback")
       };
 
       let loginWindowURL =

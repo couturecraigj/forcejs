@@ -223,8 +223,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var storageListener = function storageListener(event) {
 	          if (event.key !== "oauthCallback") return;
-	          if (event.url !== _this3.oauthCallbackURL) return;
 	          var url = event.url.replace(/#.*/, "");
+	          if (event.url !== _this3.oauthCallbackURL) return;
 	          getOAuthData(url);
 	        };
 
@@ -238,6 +238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var teardown = function teardown() {
 	          window.removeEventListener("message", windowListener);
 	          window.removeEventListener("storage", storageListener);
+	          localStorage.removeItem("oauthCallback");
 	        };
 
 	        var loginWindowURL = _this3.loginURL + ("/services/oauth2/authorize?client_id=" + _this3.appId + "&redirect_uri=" + _this3.oauthCallbackURL + "&response_type=token&state=" + _this3.instanceId);
