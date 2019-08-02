@@ -104,7 +104,7 @@ class OAuthWeb extends OAuth {
       console.log("loginURL: " + this.loginURL);
       console.log("oauthCallbackURL: " + this.oauthCallbackURL);
       const getOAuthData = url => {
-        oauthResult = getQueryStringAsObject(url);
+        const oauthResult = getQueryStringAsObject(url);
         console.log(oauthResult, this.instanceId);
         if (oauthResult.state == this.instanceId) {
           if (oauthResult.access_token) {
@@ -122,15 +122,13 @@ class OAuthWeb extends OAuth {
         }
       };
       const windowListener = event => {
-        console.log(event);
         if (
           typeof event.data !== "object" ||
           event.data.type !== "oauthCallback"
         )
           return;
 
-        let url = event.data.url;
-        getOAuthData(url);
+        getOAuthData(event.data.url);
       };
 
       const storageListener = event => {
