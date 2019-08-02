@@ -103,52 +103,54 @@ class OAuthWeb extends OAuth {
     return new Promise((resolve, reject) => {
       console.log("loginURL: " + this.loginURL);
       console.log("oauthCallbackURL: " + this.oauthCallbackURL);
-      function windowListener(event) {
+      const getOAuthData = url => {
+        oauthResult = getQueryStringAsObject(url);
+        console.log(oauthResult, this.instanceId);
+        if (oauthResult.state == this.instanceId) {
+          if (oauthResult.access_token) {
+            resolve({
+              appId: this.appId,
+              accessToken: oauthResult.access_token,
+              instanceURL: oauthResult.instance_url,
+              refreshToken: oauthResult.refresh_token,
+              userId: oauthResult.id.split("/").pop()
+            });
+          } else {
+            reject(oauthResult);
+          }
+          teardown();
+        }
+      };
+      const windowListener = event => {
         console.log(event);
         if (
           typeof event.data !== "object" ||
           event.data.type !== "oauthCallback"
         )
           return;
-        
-        let url = event.data.url,
-          oauthResult = getQueryStringAsObject(url);
-          console.log(oauthResult, this.instanceId);
-        if (oauthResult.state == this.instanceId) {
-          
-          if (oauthResult.access_token) {
-            resolve({
-              appId: this.appId,
-              accessToken: oauthResult.access_token,
-              instanceURL: oauthResult.instance_url,
-              refreshToken: oauthResult.refresh_token,
-              userId: oauthResult.id.split("/").pop()
-            });
-          } else {
-            reject(oauthResult);
-          }
-          window.removeEventListener("message", windowListener);
-        }
-      }
-      window.addEventListener("message", windowListener.bind(this));
-      document.addEventListener("oauthCallback", event => {
-        let url = event.detail,
-          oauthResult = getQueryStringAsObject(url);
 
-        if (oauthResult.state == this.instanceId) {
-          if (oauthResult.access_token) {
-            resolve({
-              appId: this.appId,
-              accessToken: oauthResult.access_token,
-              instanceURL: oauthResult.instance_url,
-              refreshToken: oauthResult.refresh_token,
-              userId: oauthResult.id.split("/").pop()
-            });
-          } else {
-            reject(oauthResult);
-          }
-        }
+        let url = event.data.url;
+        getOAuthData(url);
+      };
+
+      const storageListener = event => {
+        if (event.key !== "oauthCallback") return;
+        if (event.url !== this.oauthCallbackURL) return;
+        const url = event.url.replace(/#.*/, "");
+        getOAuthData(url);
+      };
+
+      window.addEventListener("message", windowListener);
+      window.addEventListener("storage", storageListener);
+      document.addEventListener("oauthCallback", event => {
+        let url = event.detail;
+        getOAuthData(url);
       });
+
+      const teardown = () => {
+        window.removeEventListener("message", windowListener);
+        window.removeEventListener("storage", storageListener);
+      };
 
       let loginWindowURL =
         this.loginURL +

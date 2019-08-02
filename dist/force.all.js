@@ -195,34 +195,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return new Promise(function (resolve, reject) {
 	        console.log("loginURL: " + _this3.loginURL);
 	        console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
-	        function windowListener(event) {
-	          console.log(event);
-	          if (_typeof(event.data) !== "object" || event.data.type !== "oauthCallback") return;
-
-	          var url = event.data.url,
-	              oauthResult = getQueryStringAsObject(url);
-	          console.log(oauthResult, this.instanceId);
-	          if (oauthResult.state == this.instanceId) {
-
-	            if (oauthResult.access_token) {
-	              resolve({
-	                appId: this.appId,
-	                accessToken: oauthResult.access_token,
-	                instanceURL: oauthResult.instance_url,
-	                refreshToken: oauthResult.refresh_token,
-	                userId: oauthResult.id.split("/").pop()
-	              });
-	            } else {
-	              reject(oauthResult);
-	            }
-	            window.removeEventListener("message", windowListener);
-	          }
-	        }
-	        window.addEventListener("message", windowListener.bind(_this3));
-	        document.addEventListener("oauthCallback", function (event) {
-	          var url = event.detail,
-	              oauthResult = getQueryStringAsObject(url);
-
+	        var getOAuthData = function getOAuthData(url) {
+	          oauthResult = getQueryStringAsObject(url);
+	          console.log(oauthResult, _this3.instanceId);
 	          if (oauthResult.state == _this3.instanceId) {
 	            if (oauthResult.access_token) {
 	              resolve({
@@ -235,8 +210,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	              reject(oauthResult);
 	            }
+	            teardown();
 	          }
+	        };
+	        var windowListener = function windowListener(event) {
+	          console.log(event);
+	          if (_typeof(event.data) !== "object" || event.data.type !== "oauthCallback") return;
+
+	          var url = event.data.url;
+	          getOAuthData(url);
+	        };
+
+	        var storageListener = function storageListener(event) {
+	          if (event.key !== "oauthCallback") return;
+	          if (event.url !== _this3.oauthCallbackURL) return;
+	          var url = event.url.replace(/#.*/, "");
+	          getOAuthData(url);
+	        };
+
+	        window.addEventListener("message", windowListener);
+	        window.addEventListener("storage", storageListener);
+	        document.addEventListener("oauthCallback", function (event) {
+	          var url = event.detail;
+	          getOAuthData(url);
 	        });
+
+	        var teardown = function teardown() {
+	          window.removeEventListener("message", windowListener);
+	          window.removeEventListener("storage", storageListener);
+	        };
 
 	        var loginWindowURL = _this3.loginURL + ("/services/oauth2/authorize?client_id=" + _this3.appId + "&redirect_uri=" + _this3.oauthCallbackURL + "&response_type=token&state=" + _this3.instanceId);
 	        window.open(loginWindowURL, "_blank", "location=no");
