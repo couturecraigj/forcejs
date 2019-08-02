@@ -5,13 +5,16 @@
   </head>
   <body>
     <script>
-      if (window.opener)
-      window.opener.postMessage(
-        { type: "oauthCallback", url: window.location.href },
-        window.location.origin
-      );
-      localStorage.setItem("oauthCallback", window.location.href)
-      window.close();
+      
+      if (window.opener){
+        window.opener.postMessage(
+          { type: "oauthCallback", url: window.location.href },
+          window.location.origin
+        );}
+      else {
+        localStorage.setItem("oauthCallback", window.location.href);
+      }
+      // window.close();
     </script>
   </body>
 </html>

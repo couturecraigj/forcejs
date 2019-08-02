@@ -15,6 +15,7 @@
           "http://localhost:8080/resources/oauthcallback.html"
         );
         oauth.login().then(function(oauthResult) {
+          console.log(oauthResult)
           force.DataService.createInstance(oauthResult, { useProxy: false });
           var service = force.DataService.getInstance();
           service
@@ -23,7 +24,7 @@
               var contacts = response.records;
               console.log(contacts);
             });
-        });
+        }).catch(err => console.error(err));
       }
     </script>
   </head>

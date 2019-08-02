@@ -195,22 +195,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return new Promise(function (resolve, reject) {
 	        console.log("loginURL: " + _this3.loginURL);
 	        console.log("oauthCallbackURL: " + _this3.oauthCallbackURL);
+	        var teardown = function teardown() {
+	          window.removeEventListener("message", windowListener);
+	          window.removeEventListener("storage", storageListener);
+	          localStorage.removeItem("oauthCallback");
+	        };
+	        var storageListener = function storageListener(event) {
+	          if (event.key !== "oauthCallback") return;
+	          var url = event.url.replace(/#.*/, "");
+	          if (url !== _this3.oauthCallbackURL) return;
+	          getOAuthData(event.newValue);
+	        };
 	        var getOAuthData = function getOAuthData(url) {
 	          var oauthResult = getQueryStringAsObject(url);
-	          console.log(oauthResult, _this3.instanceId);
 	          if (oauthResult.state == _this3.instanceId) {
 	            if (oauthResult.access_token) {
-	              resolve({
-	                appId: _this3.appId,
-	                accessToken: oauthResult.access_token,
-	                instanceURL: oauthResult.instance_url,
-	                refreshToken: oauthResult.refresh_token,
-	                userId: oauthResult.id.split("/").pop()
+	              return Promise.resolve().then(function () {
+	                return resolve({
+	                  appId: _this3.appId,
+	                  accessToken: oauthResult.access_token,
+	                  instanceURL: oauthResult.instance_url,
+	                  refreshToken: oauthResult.refresh_token,
+	                  userId: oauthResult.id.split("/").pop()
+	                });
+	              }).then(function (result) {
+	                teardown();
+	                return result;
 	              });
 	            } else {
 	              reject(oauthResult);
 	            }
-	            teardown();
 	          }
 	        };
 	        var windowListener = function windowListener(event) {
@@ -219,25 +233,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          getOAuthData(event.data.url);
 	        };
 
-	        var storageListener = function storageListener(event) {
-	          if (event.key !== "oauthCallback") return;
-	          var url = event.url.replace(/#.*/, "");
-	          if (url !== _this3.oauthCallbackURL) return;
-	          getOAuthData(url);
-	        };
-
 	        window.addEventListener("message", windowListener);
 	        window.addEventListener("storage", storageListener);
 	        document.addEventListener("oauthCallback", function (event) {
 	          var url = event.detail;
 	          getOAuthData(url);
 	        });
-
-	        var teardown = function teardown() {
-	          window.removeEventListener("message", windowListener);
-	          window.removeEventListener("storage", storageListener);
-	          localStorage.removeItem("oauthCallback");
-	        };
 
 	        var loginWindowURL = _this3.loginURL + ("/services/oauth2/authorize?client_id=" + _this3.appId + "&redirect_uri=" + _this3.oauthCallbackURL + "&response_type=token&state=" + _this3.instanceId);
 	        window.open(loginWindowURL, "_blank", "location=no");
