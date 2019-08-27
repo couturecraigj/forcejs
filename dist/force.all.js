@@ -496,9 +496,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (_this.useProxy) {
 	            headers["Target-URL"] = _this.instanceURL;
 	          }
-	          fetch({
+	          fetch(url, {
 	            method: method,
-	            url: url,
 	            headers: headers,
 	            body: JSON.stringify(obj.data)
 	          }).then(resolve).catch(reject);

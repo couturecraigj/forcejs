@@ -210,9 +210,8 @@ class ForceService {
         if (this.useProxy) {
           headers["Target-URL"] = this.instanceURL;
         }
-        fetch({
+        fetch(url, {
           method,
-          url,
           headers,
           body: JSON.stringify(obj.data)
         })
