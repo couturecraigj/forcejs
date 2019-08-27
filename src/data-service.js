@@ -222,9 +222,13 @@ class ForceService {
             }
             if (obj.headerParams) {
                 for (let headerName of Object.getOwnPropertyNames(obj.headerParams)) {
-                    var headerValue = obj.headerParams[headerName];
+                    let headerValue = obj.headerParams[headerName];
                     console.log('additional header ' + headerName + ' set with ' + headerValue)
-                    xhr.setRequestHeader(headerName, headerValue);
+                    if (headerName.toLowerCase() === 'origin') {
+                        xhr.withCredentials = true;
+                    } else {
+                        xhr.setRequestHeader(headerName, headerValue);
+                    }
                 }
             }
             if (this.useProxy) {

@@ -516,7 +516,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                            var headerValue = obj.headerParams[headerName];
 	                            console.log('additional header ' + headerName + ' set with ' + headerValue);
-	                            xhr.setRequestHeader(headerName, headerValue);
+	                            if (headerName.toLowerCase() === 'origin') {
+	                                xhr.withCredentials = true;
+	                            } else {
+	                                xhr.setRequestHeader(headerName, headerValue);
+	                            }
 	                        }
 	                    } catch (err) {
 	                        _didIteratorError = true;
