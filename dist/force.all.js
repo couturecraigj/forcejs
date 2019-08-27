@@ -508,6 +508,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (obj.headerParams) {
 	                    for (var headerName in Object.getOwnPropertyNames(obj.headerParams)) {
 	                        var headerValue = obj.headerParams[headerName];
+	                        console.log('additional header ' + headerName + ' set with ' + headerValue);
 	                        xhr.setRequestHeader(headerName, headerValue);
 	                    }
 	                }
