@@ -506,10 +506,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    xhr.setRequestHeader("Content-Type", obj.contentType);
 	                }
 	                if (obj.headerParams) {
-	                    for (var headerName in Object.getOwnPropertyNames(obj.headerParams)) {
-	                        var headerValue = obj.headerParams[headerName];
-	                        console.log('additional header ' + headerName + ' set with ' + headerValue);
-	                        xhr.setRequestHeader(headerName, headerValue);
+	                    var _iteratorNormalCompletion = true;
+	                    var _didIteratorError = false;
+	                    var _iteratorError = undefined;
+
+	                    try {
+	                        for (var _iterator = Object.getOwnPropertyNames(obj.headerParams)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                            var headerName = _step.value;
+
+	                            var headerValue = obj.headerParams[headerName];
+	                            console.log('additional header ' + headerName + ' set with ' + headerValue);
+	                            xhr.setRequestHeader(headerName, headerValue);
+	                        }
+	                    } catch (err) {
+	                        _didIteratorError = true;
+	                        _iteratorError = err;
+	                    } finally {
+	                        try {
+	                            if (!_iteratorNormalCompletion && _iterator.return) {
+	                                _iterator.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError) {
+	                                throw _iteratorError;
+	                            }
+	                        }
 	                    }
 	                }
 	                if (_this.useProxy) {

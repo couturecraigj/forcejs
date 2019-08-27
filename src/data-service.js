@@ -221,7 +221,7 @@ class ForceService {
                 xhr.setRequestHeader("Content-Type", obj.contentType);
             }
             if (obj.headerParams) {
-                for (var headerName in Object.getOwnPropertyNames(obj.headerParams)) {
+                for (let headerName of Object.getOwnPropertyNames(obj.headerParams)) {
                     var headerValue = obj.headerParams[headerName];
                     console.log('additional header ' + headerName + ' set with ' + headerValue)
                     xhr.setRequestHeader(headerName, headerValue);
