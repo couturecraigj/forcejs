@@ -506,7 +506,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    xhr.setRequestHeader("Content-Type", obj.contentType);
 	                }
 	                if (obj.headerParams) {
-	                    for (var headerName in obj.headerParams.getOwnPropertyNames()) {
+	                    for (var headerName in Object.getOwnPropertyNames(obj.headerParams)) {
 	                        var headerValue = obj.headerParams[headerName];
 	                        xhr.setRequestHeader(headerName, headerValue);
 	                    }
