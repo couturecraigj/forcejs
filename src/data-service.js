@@ -190,7 +190,8 @@ class ForceService {
         url += "?" + toQueryString(obj.params);
       }
 
-      if ("fetch" in window) {
+    //   if ("fetch" in window) {
+      if (false) {
         const headers = {
           Accept: "application/json",
           Authorization: "Bearer " + this.accessToken,

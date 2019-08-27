@@ -456,7 +456,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          url += "?" + toQueryString(obj.params);
 	        }
 
-	        if ("fetch" in window) {
+	        //   if ("fetch" in window) {
+	        if (false) {
 	          var headers = {
 	            Accept: "application/json",
 	            Authorization: "Bearer " + _this.accessToken,
