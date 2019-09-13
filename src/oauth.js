@@ -118,18 +118,20 @@ class OAuthWeb extends OAuth {
         const oauthResult = getQueryStringAsObject(url);
         if (oauthResult.state == this.instanceId) {
           if (oauthResult.access_token) {
-            return Promise.resolve().then(() => {
-              return resolve({
-                appId: this.appId,
-                accessToken: oauthResult.access_token,
-                instanceURL: oauthResult.instance_url,
-                refreshToken: oauthResult.refresh_token,
-                userId: oauthResult.id.split("/").pop()
+            return Promise.resolve()
+              .then(() => {
+                return resolve({
+                  appId: this.appId,
+                  accessToken: oauthResult.access_token,
+                  instanceURL: oauthResult.instance_url,
+                  refreshToken: oauthResult.refresh_token,
+                  userId: oauthResult.id.split("/").pop()
+                });
+              })
+              .then(result => {
+                teardown();
+                return result;
               });
-            }).then(result => {
-              teardown();
-              return result;
-            });
           } else {
             reject(oauthResult);
           }
@@ -154,10 +156,21 @@ class OAuthWeb extends OAuth {
 
       let loginWindowURL =
         this.loginURL +
-        `/services/oauth2/authorize?client_id=${this.appId}&redirect_uri=${
-          this.oauthCallbackURL
-        }&response_type=token&state=${this.instanceId}`;
+        `/services/oauth2/authorize?client_id=${this.appId}&redirect_uri=${this.oauthCallbackURL}&response_type=token&state=${this.instanceId}`;
       window.open(loginWindowURL, "_blank", "location=no");
     });
+  }
+  callback(href) {
+    var type = "oauthCallback";
+    if (window.opener)
+      window.opener.postMessage(
+        {
+          type: type,
+          url: href
+        },
+        "*"
+      );
+    localStorage.setItem(type, href);
+    window.close();
   }
 }

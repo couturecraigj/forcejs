@@ -244,6 +244,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        window.open(loginWindowURL, "_blank", "location=no");
 	      });
 	    }
+	  }, {
+	    key: "callback",
+	    value: function callback(href) {
+	      var type = "oauthCallback";
+	      if (window.opener) window.opener.postMessage({
+	        type: type,
+	        url: href
+	      }, "*");
+	      localStorage.setItem(type, href);
+	      window.close();
+	    }
 	  }]);
 
 	  return OAuthWeb;
